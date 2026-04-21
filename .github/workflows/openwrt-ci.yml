@@ -8,11 +8,10 @@
 name: OpenWrt-CI
 
 on:
-  schedule:
-    - cron: 0 20 * * *
+  workflow_dispatch:
 
-permissions:
-  contents: read
+env:
+  TZ: Etc/UTC
 
 jobs:
 
@@ -58,19 +57,14 @@ jobs:
 
       - name: Update feeds
         run: |
-          sed -i 's/#src-git helloworld/src-git helloworld/g' ./feeds.conf.default
           ./scripts/feeds update -a
           ./scripts/feeds install -a
 
-      - name: Generate configuration file
-        run: make defconfig
-
-      - name: Download packages
-        run: make download -j16
+      - name: SSH connect to Actions
+        uses: P3TERX/ssh2actions@main
 
       - name: Compile firmware
         run: |
-          make -j$(nproc) || make -j1 V=s
           echo "======================="
           echo "Space usage:"
           echo "======================="

@@ -9,8 +9,6 @@ name: OpenWrt-build
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: 0 20 * * *
 
 permissions:
   contents: read
